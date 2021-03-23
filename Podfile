@@ -7,7 +7,8 @@ target 'RelaxNow' do
   
   pod 'Alamofire', '~> 4.9.1'
   pod 'IQKeyboardManager'
-
+  pod 'SwiftSpinner'
+  pod 'LGSideMenuController'
 
   # Pods for RelaxNow
 

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AppoinmentListViewController: UIViewController {
+class AppointmentListViewController: UIViewController {
     @IBOutlet weak var menuButton: UIButton!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var profilePicButton: UIButton!
@@ -18,19 +18,29 @@ class AppoinmentListViewController: UIViewController {
     @IBOutlet weak var appointmentLabel: UILabel!
     @IBOutlet weak var departmentPicImageView: UIImageView!
     
+    @IBOutlet weak var patientSearchBar: UISearchBar!
     
     @IBOutlet weak var upcomingButton: UIButton!
     @IBOutlet weak var todayButton: UIButton!
     
     @IBOutlet weak var appointmentListTableView: UITableView!
     
-    var appointmentVM = AppointmentViewModel()
+    var appointmentVM:AppointmentViewModel?// = AppointmentViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
-        self.getListOfAppointments()
+//        self.getListOfAppointments()
+//        setUpUI()
+//        setUpData()
         setUpUI()
+        if appointmentVM == nil{
+            getListOfAppointments()
+            
+            
+        }else{
+            setUpData()
+        }
         // Do any additional setup after loading the view.
     }
     
@@ -40,19 +50,19 @@ class AppoinmentListViewController: UIViewController {
         
         departmentPicImageView.layer.cornerRadius = departmentPicImageView.bounds.height/2
         departmentPicImageView.layer.masksToBounds = true
-
+        
         upcomingAndTodayAppoinmentAction(upcomingButton)
     }
     
     private func setUpData(){
-        appointmentCount.text = "\(appointmentVM.numberOfItems)"
+        appointmentCount.text = "\(appointmentVM!.numberOfItems)"
     }
     //MARK:- Helper Methods
     func registerCell(){
         appointmentListTableView.registerTableCell(identifier: .patientTableViewCell)
     }
     
-//MARK:- UIAction Buttons
+    //MARK:- UIAction Buttons
     
     @IBAction func menuAction(_ sender: UIButton) {
         self.navigationController?.popViewController(animated: true)
@@ -72,7 +82,7 @@ class AppoinmentListViewController: UIViewController {
             todayButton.layer.borderColor = UIColor.lightGreen.cgColor
             todayButton.setTitleColor(.lightGreen, for: .normal)
             upcomingButton.setTitleColor(.white, for: .normal)
-
+            
         default: //Today
             todayButton.backgroundColor = .lightGreen
             upcomingButton.backgroundColor = .clear
@@ -80,50 +90,62 @@ class AppoinmentListViewController: UIViewController {
             upcomingButton.layer.borderColor = UIColor.lightGreen.cgColor
             todayButton.setTitleColor(.white, for: .normal)
             upcomingButton.setTitleColor(.lightGreen, for: .normal)
-
-
+            
+            
             break
         }
     }
-    
-    private func getListOfAppointments(){
-        APIManager.shared().listOfAppointments("1235", "2021-03-08") { [weak self] (patients, alert) in
-            if let appointments = patients{
-                self?.appointmentVM.setAppointmentList(appointments: appointments)
-                Helper.dispatchMain {
-                    self?.setUpData()
-                    self?.appointmentListTableView.reloadData()
-                }
-            }else{
-                debugPrint("Show Alert", alert?.body)
-            }
-        }
+    @IBAction func sideMenuButtonAction(_ sender: UIButton) {
+       
+        guard let sideMenuController = sideMenuController else { return }
+        sideMenuController.showLeftView(animated: true, completion: nil)
     }
-//
-//    APIManager.shared().loginUserWith("7827990390", "PasswordValue") { [weak self] (userData, alert) in
-//        if userData != nil{
-//            UserData.setCurrent(userData!)
-//            Helper.dispatchMain {
-//                let controller = AppoinmentListViewController.instatiate(from: .Appointment)
-//                self?.navigationController?.pushViewController(controller, animated: true)
-//            }
-//        }else{
-//            debugPrint("Show Alert", alert?.body)
-//        }
-//    }
-
-    
 }
 
+extension AppointmentListViewController: UISearchBarDelegate{
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        debugPrint("search bar begin editing")
 
-extension AppoinmentListViewController: UITableViewDelegate, UITableViewDataSource{
+        searchBar.showsCancelButton = true
+        return true
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        debugPrint("cancel button clicked")
+        searchBar.showsCancelButton = false
+        searchBar.resignFirstResponder()
+        searchBar.text = ""
+        appointmentVM?.resetSearchResult()
+        self.appointmentListTableView.reloadData()
+        // rese result
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        debugPrint("search bar end editing")
+        searchBar.showsCancelButton = false
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText == ""{
+            debugPrint("reset search result")
+            appointmentVM?.resetSearchResult()
+        }else{
+            // filter result from array
+            appointmentVM?.filterResultWith(text: searchText)
+        }
+        self.appointmentListTableView.reloadData()
+        debugPrint("Search bar text did change")
+    }
+}
+
+extension AppointmentListViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return appointmentVM.numberOfItems
+        return appointmentVM?.numberOfItems ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier.patientTableViewCell.rawValue, for: indexPath) as? PatientTableViewCell
-        if let appointment = appointmentVM.appointment(atIndex: indexPath.item){
+        if let appointment = appointmentVM?.appointment(atIndex: indexPath.item){
             cell?.configureMyPatientCell(with: appointment, atIndexPath: indexPath)
         }
         
@@ -134,6 +156,21 @@ extension AppoinmentListViewController: UITableViewDelegate, UITableViewDataSour
         return 85
     }
     
+    private func getListOfAppointments(){
+        APIManager.shared().listOfAppointments("1235", "2021-03-08") { [weak self] (patients, alert) in
+            if let appointments = patients{
+                self?.appointmentVM = AppointmentViewModel()
+
+                self?.appointmentVM?.setAppointmentList(appointments: appointments)
+                Helper.dispatchMain {
+                    self?.setUpData()
+                    self?.appointmentListTableView.reloadData()
+                }
+            }else{
+                //                debugPrint("Show Alert", alert?.body)
+            }
+        }
+    }
 }
 /*func listOfAppointments(_ doctorId: String,_ date: String, complition: @escaping (_ patients: [PatientData]?, _ message: AlertMessage?)->()){
  let parameter:Parameters = ["query":"\(EndpointItem.doctorAppointments.path)('\(doctorId)','\(date)')",

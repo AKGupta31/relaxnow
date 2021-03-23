@@ -33,7 +33,7 @@
 		84569D6825EA8654004BB24C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84569D6625EA8654004BB24C /* Main.storyboard */; };
 		84569D6A25EA8657004BB24C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84569D6925EA8657004BB24C /* Assets.xcassets */; };
 		84569D6D25EA8657004BB24C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84569D6B25EA8657004BB24C /* LaunchScreen.storyboard */; };
-		BE1BF3AC25EFF85700CFE8A2 /* AppoinmentListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1BF3AB25EFF85700CFE8A2 /* AppoinmentListViewController.swift */; };
+		BE1BF3AC25EFF85700CFE8A2 /* AppointmentListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1BF3AB25EFF85700CFE8A2 /* AppointmentListViewController.swift */; };
 		BE1BF3B125F00C7000CFE8A2 /* AppointmentListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1BF3AF25F00C7000CFE8A2 /* AppointmentListCell.swift */; };
 		BE1BF3B225F00C7000CFE8A2 /* AppointmentListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE1BF3B025F00C7000CFE8A2 /* AppointmentListCell.xib */; };
 		BE1BF3F025F1478400CFE8A2 /* UIStoryboardExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1BF3EF25F1478400CFE8A2 /* UIStoryboardExtension.swift */; };
@@ -43,6 +43,10 @@
 		BE4A2CEF25F14EF500B4E651 /* CollectionViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4A2CEE25F14EF500B4E651 /* CollectionViewExtension.swift */; };
 		BE4A2CF225F1548C00B4E651 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4A2CF125F1548C00B4E651 /* UIColorExtension.swift */; };
 		BE7F63FE25F69AD900D650E4 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7F63FD25F69AD900D650E4 /* UserData.swift */; };
+		BE88E751260117860049933C /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE88E750260117860049933C /* MainViewController.swift */; };
+		BE88E755260117B00049933C /* LeftViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE88E753260117B00049933C /* LeftViewCell.swift */; };
+		BE88E756260117B00049933C /* LeftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE88E754260117B00049933C /* LeftViewController.swift */; };
+		BE88E75B260117D00049933C /* RootNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE88E759260117D00049933C /* RootNavigationController.swift */; };
 		BECA3CB925EEB0460016C36C /* Appointment.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BECA3CB825EEB0460016C36C /* Appointment.storyboard */; };
 		BEE75CD325F92D9E00E5542C /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE75CD225F92D9E00E5542C /* APIManager.swift */; };
 		BEE75CDB25F93EFD00E5542C /* BaseDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE75CDA25F93EFD00E5542C /* BaseDataModel.swift */; };
@@ -88,7 +92,7 @@
 		84569D6E25EA8657004BB24C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A39B196568A3C2CA582ADCEC /* Pods_RelaxNow.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RelaxNow.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8D0902188FCE147C0A3B5DB /* Pods-RelaxNow.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RelaxNow.release.xcconfig"; path = "Target Support Files/Pods-RelaxNow/Pods-RelaxNow.release.xcconfig"; sourceTree = "<group>"; };
-		BE1BF3AB25EFF85700CFE8A2 /* AppoinmentListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppoinmentListViewController.swift; sourceTree = "<group>"; };
+		BE1BF3AB25EFF85700CFE8A2 /* AppointmentListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppointmentListViewController.swift; sourceTree = "<group>"; };
 		BE1BF3AF25F00C7000CFE8A2 /* AppointmentListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppointmentListCell.swift; sourceTree = "<group>"; };
 		BE1BF3B025F00C7000CFE8A2 /* AppointmentListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppointmentListCell.xib; sourceTree = "<group>"; };
 		BE1BF3EF25F1478400CFE8A2 /* UIStoryboardExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStoryboardExtension.swift; sourceTree = "<group>"; };
@@ -98,6 +102,10 @@
 		BE4A2CEE25F14EF500B4E651 /* CollectionViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewExtension.swift; sourceTree = "<group>"; };
 		BE4A2CF125F1548C00B4E651 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		BE7F63FD25F69AD900D650E4 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
+		BE88E750260117860049933C /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		BE88E753260117B00049933C /* LeftViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftViewCell.swift; sourceTree = "<group>"; };
+		BE88E754260117B00049933C /* LeftViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftViewController.swift; sourceTree = "<group>"; };
+		BE88E759260117D00049933C /* RootNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNavigationController.swift; sourceTree = "<group>"; };
 		BECA3CB825EEB0460016C36C /* Appointment.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Appointment.storyboard; sourceTree = "<group>"; };
 		BEE75CD225F92D9E00E5542C /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		BEE75CDA25F93EFD00E5542C /* BaseDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDataModel.swift; sourceTree = "<group>"; };
@@ -281,6 +289,7 @@
 		BE1BF3A825EFF7BF00CFE8A2 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				BEF18B4125FFCC1300CF2500 /* CustomSlideMenu */,
 				BEFB037225F3DE2100F8AF57 /* MyPatientsList */,
 				BE1BF3A925EFF7D100CFE8A2 /* Appoinments */,
 			);
@@ -301,7 +310,7 @@
 		BE1BF3AA25EFF7DD00CFE8A2 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				BE1BF3AB25EFF85700CFE8A2 /* AppoinmentListViewController.swift */,
+				BE1BF3AB25EFF85700CFE8A2 /* AppointmentListViewController.swift */,
 				BEFE53DB25F3FB70008CF393 /* AddMedicationViewController.swift */,
 			);
 			path = Controller;
@@ -361,6 +370,17 @@
 				BECA3CB825EEB0460016C36C /* Appointment.storyboard */,
 			);
 			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		BEF18B4125FFCC1300CF2500 /* CustomSlideMenu */ = {
+			isa = PBXGroup;
+			children = (
+				BE88E759260117D00049933C /* RootNavigationController.swift */,
+				BE88E753260117B00049933C /* LeftViewCell.swift */,
+				BE88E754260117B00049933C /* LeftViewController.swift */,
+				BE88E750260117860049933C /* MainViewController.swift */,
+			);
+			path = CustomSlideMenu;
 			sourceTree = "<group>";
 		};
 		BEFB037225F3DE2100F8AF57 /* MyPatientsList */ = {
@@ -528,6 +548,7 @@
 				BEFE53E625F3FBE7008CF393 /* AddMedicationTableCell.swift in Sources */,
 				BEE75CD325F92D9E00E5542C /* APIManager.swift in Sources */,
 				31538AEE25EF2D570033594C /* ZWLabel.swift in Sources */,
+				BE88E755260117B00049933C /* LeftViewCell.swift in Sources */,
 				31538AF625EF34580033594C /* DashboardViewController.swift in Sources */,
 				BE1BF3F025F1478400CFE8A2 /* UIStoryboardExtension.swift in Sources */,
 				316C56BB25EBDBCA00683F3D /* Constant.swift in Sources */,
@@ -538,13 +559,16 @@
 				316C56B125EBC6E100683F3D /* Utility.swift in Sources */,
 				84569D6325EA8654004BB24C /* SceneDelegate.swift in Sources */,
 				BE7F63FE25F69AD900D650E4 /* UserData.swift in Sources */,
+				BE88E751260117860049933C /* MainViewController.swift in Sources */,
 				316C56B725EBC93800683F3D /* Reachability.m in Sources */,
 				BEFB037525F3DE5E00F8AF57 /* MyPatientsListViewController.swift in Sources */,
+				BE88E756260117B00049933C /* LeftViewController.swift in Sources */,
+				BE88E75B260117D00049933C /* RootNavigationController.swift in Sources */,
 				BEE75CDB25F93EFD00E5542C /* BaseDataModel.swift in Sources */,
 				316C56AD25EBC54900683F3D /* APIHandler.swift in Sources */,
 				BE1FAA1425FA90FC005D3468 /* PatientBaseData.swift in Sources */,
 				BE1FAA1125FA8D4A005D3468 /* PatientData.swift in Sources */,
-				BE1BF3AC25EFF85700CFE8A2 /* AppoinmentListViewController.swift in Sources */,
+				BE1BF3AC25EFF85700CFE8A2 /* AppointmentListViewController.swift in Sources */,
 				BE4A2CF225F1548C00B4E651 /* UIColorExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -694,16 +718,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 7N52AYJ9FS;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = RelaxNow/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = anix.iOSapps.relaxnow.RelaxNow;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "RelaxNow/Supporting Files/RelaxNow-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -718,16 +743,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 7N52AYJ9FS;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = RelaxNow/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = anix.iOSapps.relaxnow.RelaxNow;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "RelaxNow/Supporting Files/RelaxNow-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
