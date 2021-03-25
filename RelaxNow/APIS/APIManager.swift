@@ -34,12 +34,17 @@ protocol EndPointType {
 
 enum EndpointItem {
     
+    static let kBaseUrl = "https://noworrynotension.com/NodeTest/"
+    
     // MARK: User actions
     case login
     case profile
     case doctorAppointments//DOCTOR_APPOINTMENTS
-//    case updateUser
-//    case userExists(_: String)
+    case medicineList
+    case insertPrescription
+    //    case updateUser
+    //    case userExists(_: String)
+    
     
 }
 
@@ -51,9 +56,9 @@ extension EndpointItem: EndPointType {
     
     var baseURL: String {
         switch APIManager.networkEnviroment {
-            case .dev: return "https://noworrynotension.com/NodeTest/"
-            case .production: return "https://noworrynotension.com/NodeTest/"
-            case .stage: return "https://noworrynotension.com/NodeTest/"
+        case .dev: return EndpointItem.kBaseUrl
+        case .production: return  EndpointItem.kBaseUrl
+        case .stage: return  EndpointItem.kBaseUrl
         }
     }
     
@@ -66,19 +71,23 @@ extension EndpointItem: EndPointType {
         case .login : return "login/obj"
         case .profile: return "user/profile"
         case .doctorAppointments: return "api/executequery"
-//        case .updateUser:
-//            return "user/update"
-//        case .userExists(let email):
-//            return "/user/check/\(email)"
+        case .medicineList: return "api/executequery"
+        case .insertPrescription: return "api/executequery"
+        //        case .updateUser:
+        //            return "user/update"
+        //        case .userExists(let email):
+        //            return "/user/check/\(email)"
         }
     }
     
     var httpMethod: HTTPMethod {
         switch self {
-        case .login,.doctorAppointments:
+        case .login,.doctorAppointments,.medicineList,.insertPrescription:
             return .post
-        default:
+        case .profile:
             return .get
+//        default:
+//            return .get
         }
     }
     
@@ -86,7 +95,7 @@ extension EndpointItem: EndPointType {
         switch self {
         case .login :
             return ["Content-Type": "application/json"]
-        case .profile,.doctorAppointments:
+        case .profile,.doctorAppointments,.medicineList,.insertPrescription:
             return ["Content-Type": "application/json",
                     "token": UserData.current.token!]
         default:
@@ -170,50 +179,71 @@ class APIManager {
     }
     
     private func parseApiError(data: Data?) -> AlertMessage {
-            let decoder = JSONDecoder()
-            if let jsonData = data, let error = try? decoder.decode(ErrorObject.self, from: jsonData) {
-                return AlertMessage(title: "Error", body: error.key?.localizedLowercase ?? "Error message")
-            }
-        return AlertMessage(title: "Error", body: "Error message")
+        let decoder = JSONDecoder()
+        if let jsonData = data, let error = try? decoder.decode(ErrorObject.self, from: jsonData) {
+            return AlertMessage(title: "Error", body: error.key?.localizedLowercase ?? "Error message")
         }
+        return AlertMessage(title: "Error", body: "Error message")
+    }
     
+    
+    func callMethod(type: EndpointItem, params: Parameters? = nil, handler: @escaping ([[String:Any]]?, _ error: AlertMessage?)->()) {
+        
+        self.sessionManager.request(type.url,
+                                    method: type.httpMethod,
+                                    parameters: params,
+                                    encoding: type.encoding,
+                                    headers: type.headers).validate().responseJSON { data in
+                                        switch data.result {
+                                        case .success(let response):
+                                            if let data = response as? [String: Any]{
+                                                let dict = data["data"] as? [[String: Any]]
+                                                handler(dict, nil)
+                                            }
+                                            break
+                                        case .failure(_):
+                                            handler(nil, self.parseApiError(data: data.data))
+                                            break
+                                        }
+                                    }
+    }
     
     func call(type: EndpointItem, params: Parameters? = nil, handler: @escaping (()?, _ error: AlertMessage?)->()) {
-            self.sessionManager.request(type.url,
-                                        method: type.httpMethod,
-                                        parameters: params,
-                                        encoding: type.encoding,
-                                        headers: type.headers).validate().responseJSON { data in
-                                            switch data.result {
-                                            case .success(_):
-                                                handler((), nil)
-                                                break
-                                            case .failure(_):
-                                                handler(nil, self.parseApiError(data: data.data))
-                                                break
-                                            }
-            }
+        self.sessionManager.request(type.url,
+                                    method: type.httpMethod,
+                                    parameters: params,
+                                    encoding: type.encoding,
+                                    headers: type.headers).validate().responseJSON { data in
+                                        switch data.result {
+                                        case .success(_):
+                                            handler((), nil)
+                                            break
+                                        case .failure(_):
+                                            handler(nil, self.parseApiError(data: data.data))
+                                            break
+                                        }
+                                    }
     }
-        
+    
     /*func checkIfUserExists(email: String, handler: @escaping (_ exists: AddEmail.UserExists?, _ message: AlertMessage?)->()) {
-            self.apiManager.call(type: RequestItemsType.userExists(email)) { (exists: AddEmail.UserExists?, message: AlertMessage?) in
-                if var exists = exists {
-                    exists.email = email
-                    handler(exists, nil)
-                } else {
-                    handler(nil, message!)
-                }
-            }
-        }
-    func getProfile(handler: @escaping (_ user: User?, _ error: AlertMessage?)->()) {
-            self.apiManager.call(type: RequestItemsType.profile) { (user: User?, message: AlertMessage?) in
-                if var user = user {
-                    handler(user, nil)
-                } else {
-                    handler(nil, message!)
-                }
-            }
-        }*/
+     self.apiManager.call(type: RequestItemsType.userExists(email)) { (exists: AddEmail.UserExists?, message: AlertMessage?) in
+     if var exists = exists {
+     exists.email = email
+     handler(exists, nil)
+     } else {
+     handler(nil, message!)
+     }
+     }
+     }
+     func getProfile(handler: @escaping (_ user: User?, _ error: AlertMessage?)->()) {
+     self.apiManager.call(type: RequestItemsType.profile) { (user: User?, message: AlertMessage?) in
+     if var user = user {
+     handler(user, nil)
+     } else {
+     handler(nil, message!)
+     }
+     }
+     }*/
     
     
     func loginUserWith(_ mobileNo: String,_ password: String, complition: @escaping (_ exists: UserData?, _ message: AlertMessage?)->()){
@@ -225,19 +255,48 @@ class APIManager {
     }
     
     func listOfAppointments(_ doctorId: String,_ date: String, complition: @escaping (_ patients: [PatientData]?, _ message: AlertMessage?)->()){
-     let parameter:Parameters = ["query":"CALL RN_DOCTOR_APPOINTMENTS('\(doctorId)','\(date)')",
-                                 "params":""]
-     self.callMethod(type: .doctorAppointments, params: parameter) { (appointment: PatientBaseData?, alert) in
-         complition(appointment?.patients,alert)
-     }
+        let parameter:Parameters = ["query":"CALL RN_DOCTOR_APPOINTMENTS('\(doctorId)','\(date)')",
+                                    "params":""]
+        self.callMethod(type: .doctorAppointments, params: parameter) { (appointment: PatientBaseData?, alert) in
+            complition(appointment?.patients,alert)
+        }
     }
     
     func listOfPatientss(_ doctorId: String,_ date: String, complition: @escaping (_ patients: [PatientData]?, _ message: AlertMessage?)->()){
-     let parameter:Parameters = ["query":"call RN_DOCTOR_PATIENTS('\(doctorId)','\(date)')",
-                                 "params":""]
-     self.callMethod(type: .doctorAppointments, params: parameter) { (appointment: PatientBaseData?, alert) in
-         complition(appointment?.patients,alert)
-     }
+        let parameter:Parameters = ["query":"call RN_DOCTOR_PATIENTS('\(doctorId)','\(date)')",
+                                    "params":""]
+        self.callMethod(type: .doctorAppointments, params: parameter) { (appointment: PatientBaseData?, alert) in
+            complition(appointment?.patients,alert)
+        }
+    }
+    
+    func getListOfMedicines(complition: @escaping (_ response: MedicinelistResponse?, _ message: AlertMessage?)->()){
+        let parameter:Parameters = ["query":"Call RN_GET_MEDICINE()",
+                                    "params":""]
+        self.callMethod(type: .medicineList, params: parameter) { (medicineResponse: MedicinelistResponse?, alert) in
+            complition(medicineResponse,alert)
+        }
+    }
+    
+    
+    
+    // Add Medication VC API
+    func insertPrescription(ofAppointmentId id: Int, text: String,createdBy: String, complition: @escaping (_ response: [[String: Any]]?, _ message: AlertMessage?)->()){
+        let parameter:Parameters = ["query":"call RN_APPOINTMENT_PRESCRIPTION_INSERT('\(id)','\(text)','\(createdBy)')","params":""]
+        
+        self.callMethod(type: .insertPrescription, params: parameter) { (response, alert) in
+            complition(response,alert)
+        }
+    }
+    
+    func insertMedicne(prescriptionId: Int, medicine: PrescriptionModel,createdBy: String, complition: @escaping (_ response: [[String: Any]]?, _ message: AlertMessage?)->()){
+        
+        
+        let parameter:Parameters = ["query":"call RN_APPOINTMENT_PRESCRIPTION_MEDICINE_INSERT('\(prescriptionId)','\(medicine.medicineName!)','\(medicine.potency!)','\(medicine.dose!)','\(medicine.duration!)','\(medicine.action)','\(createdBy)')","params":""]
+        
+        self.callMethod(type: .insertPrescription, params: parameter) { (response, alert) in
+            complition(response,alert)
+        }
     }
     
 }

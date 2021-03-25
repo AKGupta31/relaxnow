@@ -17,8 +17,9 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        self.textFeild_email.text = "7827990390"
-        self.textFeild_password.text = "PasswordValue"
+        
+        textFeild_email.text = "99999"
+        textFeild_password.text = "PasswordValue"
     }
     
     
@@ -28,11 +29,12 @@ class LoginViewController: UIViewController {
     
     
     @IBAction func BtnClicked_login(_ sender: Any) {
-        guard let mobileNumber = self.textFeild_email.text else{return}
-        guard let password = self.textFeild_password.text else {return}
-        
+        guard let mobilNumber = self.textFeild_email.text else {return}
+        guard  let password = self.textFeild_password.text else {
+            return
+        }
         SwiftSpinner.show("Loading...")
-        APIManager.shared().loginUserWith(mobileNumber, password) {
+        APIManager.shared().loginUserWith(mobilNumber, password) {
             [weak self] (userData, alert) in
             SwiftSpinner.hide()
             if userData != nil{
@@ -63,10 +65,6 @@ class LoginViewController: UIViewController {
                     
                 }
             }else{
-                guard let message = alert?.body else{return}
-                Utility.sharedInstance.showAlert(Title: "Alert!", message: message, viewcontroller: self!) {
-                    
-                }
                 debugPrint("Show Alert", alert?.body)
             }
         }

@@ -14,9 +14,15 @@ class DashboardViewController: UIViewController {
     @IBOutlet var tableview_patient: UITableView!
     
     @IBOutlet weak var profileButton: UIButton!
-//    private var patients = [PatientData]()
+    
+    @IBOutlet weak var lblAppointmentDate: UILabel!
+    
+    @IBOutlet weak var btnToday: UIButton!
+    
+    @IBOutlet weak var btnUpcoming: UIButton!
+    
     var appointmentVM = AppointmentViewModel()
-    var patientsVM = AppointmentViewModel()
+    var patientsVM = PatientsViewModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,10 +31,24 @@ class DashboardViewController: UIViewController {
         getListOfAppointments()
         getListOfPatients()
         setupUI()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        appointmentVM.viewType = .dashboard
+        appointmentVM.reloadData = {[weak self] in
+            self?.tableview_patient.reloadData()
+        }
     }
     
     private func setupUI(){
         Utility.sharedInstance.setRoundCorner(view: profileButton)
+        lblAppointmentDate.text = DateHelper.shared.getCurrentDate()
+        btnToday.layer.borderWidth = 1.0
+        btnUpcoming.layer.borderWidth = 1.0
+        btnToday.layer.borderColor = UIColor(named: "ParrotGreen")?.cgColor
+        btnUpcoming.layer.borderColor = UIColor(named: "ParrotGreen")?.cgColor
     }
     
     @IBAction func actionSeeTotalPatients(_ sender: UIButton) {
@@ -50,6 +70,7 @@ class DashboardViewController: UIViewController {
         if appointmentVM.numberOfItems > 0 {
             let controller = AppointmentListViewController.instatiate(from: .Appointment)
             controller.appointmentVM = self.appointmentVM
+            controller.appointmentVM?.viewType = .appointmentScreen
             self.navigationController?.pushViewController(controller, animated: true)
         }
         
@@ -59,29 +80,56 @@ class DashboardViewController: UIViewController {
         guard let sideMenuController = sideMenuController else { return }
         sideMenuController.showLeftView(animated: true, completion: nil)
     }
+    
+    @IBAction func actionUpcomingAppointment(_ sender: UIButton) {
+        selectButton(sender)
+        appointmentVM.selectedTab = .upcoming
+        
+        
+    }
+    @IBAction func actionTodayAppointment(_ sender: UIButton) {
+        selectButton(sender)
+        appointmentVM.selectedTab = .today
+    }
+    
+    func selectButton(_ sender:UIButton){
+        let color = UIColor(named: "ParrotGreen")
+        btnToday.layer.borderColor = color?.cgColor
+        btnUpcoming.layer.borderColor = color?.cgColor
+        btnToday.setTitleColor(color, for: .normal)
+        btnUpcoming.setTitleColor(color, for: .normal)
+        btnToday.backgroundColor = .clear
+        btnUpcoming.backgroundColor = .clear
+        sender.backgroundColor = color
+        sender.setTitleColor(.white, for: .normal)
+    }
+    
 }
 
 //MARK: API Service
 
 extension DashboardViewController {
     private func getListOfPatients(){
-        APIManager.shared().listOfPatientss("1235", "2021-03-08") { [weak self] (patients, alert) in
+        guard let id = UserData.current.userId else {return}
+        APIManager.shared().listOfPatientss(String(id), "1900-01-01") { [weak self] (patients, alert) in
             if let patients = patients{
                 self?.patientsVM.setAppointmentList(appointments: patients)
 //                self?.patients.append(contentsOf: patients)
-                self?.lblToalPatientCount.text = self?.patientsVM.numberOfItems.description
-                self?.lblTodayPatientCount.text = self?.patientsVM.numberOfItems.description
+                self?.lblToalPatientCount.text = self?.patientsVM.totalNumberOfItems.description
+                self?.lblTodayPatientCount.text = self?.patientsVM.totalNumberOfItems.description
             }else{
                 //                debugPrint("Show Alert", alert?.body)
             }
         }
     }
     
+    
     private func getListOfAppointments(){
-        APIManager.shared().listOfAppointments("1235", "2021-03-08") { [weak self] (patients, alert) in
+        guard let id = UserData.current.userId else {return}
+        APIManager.shared().listOfAppointments(String(id), "1900-01-01") { [weak self] (patients, alert) in
             if let appointments = patients{
                 self?.appointmentVM.setAppointmentList(appointments: appointments)
-                self?.lblAppointmentsCount.text = self!.appointmentVM.numberOfItems.description
+                self?.lblAppointmentsCount.text = self!.appointmentVM.totalNumberOfItems.description
                 Helper.dispatchMain {
                     self?.tableview_patient.reloadData()
                 }
@@ -90,6 +138,8 @@ extension DashboardViewController {
             }
         }
     }
+    
+    
 }
 extension DashboardViewController : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -105,12 +155,9 @@ extension DashboardViewController : UITableViewDelegate, UITableViewDataSource{
         if let appointment = appointmentVM.appointment(atIndex: indexPath.item){
             cell.configureMyPatientCell(with: appointment, atIndexPath: indexPath)
         }
-//        cell.configureMyPatientCell(with: patients[indexPath.row], atIndexPath: indexPath)
         if indexPath.row %  2 == 0 {
             cell.contentView.backgroundColor = .white
-        }
-        else
-        {
+        }else{
             cell.contentView.backgroundColor = UIColor.init(red: 240.0/255.0, green: 240.0/255.0, blue: 240.0/255.0, alpha: 1.0)
             
         }
@@ -118,7 +165,10 @@ extension DashboardViewController : UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
+        let patientData = appointmentVM.appointment(atIndex: indexPath.item)
+        let controller = AddMedicationViewController.instatiate(from: .Appointment)
+        controller.patientData = patientData
+        self.navigationController?.pushViewController(controller, animated: true)
     }
    
 }
